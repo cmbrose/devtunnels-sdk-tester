@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@microsoft/dev-tunnels-ssh": "^3.11.38",
+    "@microsoft/dev-tunnels-ssh-keys": "^3.11.38",
+    "@microsoft/dev-tunnels-ssh-tcp": "^3.11.38",
+    "sshpk": "^1.18.0"
+  }
+}
