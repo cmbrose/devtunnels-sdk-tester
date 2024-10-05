@@ -4,5 +4,9 @@
     "@microsoft/dev-tunnels-ssh-keys": "^3.11.38",
     "@microsoft/dev-tunnels-ssh-tcp": "^3.11.38",
     "sshpk": "^1.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "tsx": "^4.19.1"
   }
 }
