@@ -85,6 +85,7 @@ function getArgs(): {port: number, tty: boolean, command: string} {
             port,
             tty,
             command,
+            help,
         }
     } = parseArgs({
         options: {
@@ -102,9 +103,28 @@ function getArgs(): {port: number, tty: boolean, command: string} {
                 type: 'string',
                 short: 'c',
                 default: defaultCommandToRun
+            },
+            help: {
+                type: 'boolean',
+                short: 'h',
+                default: false,
             }
         }
     })
+
+    if (help) {
+        console.log('Execute commands over the Dev Tunnel SDK using a local SSH server')
+        console.log('')
+        console.log('Usage: tsx main.ts [OPTIONS]')
+        console.log('')
+        console.log('Options:')
+        console.log("  -t, --tty      Use a pty to execute the command (allows interactive bash shells)")
+        console.log("  -p, --port     localhost port the SSH server is listening on")
+        console.log("  -c, --command  The command to execute (or hardcode it in the app)")
+        console.log('')
+
+        process.exit(0);
+    }
 
     return {
         port: Number(port),
