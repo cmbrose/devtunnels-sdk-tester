@@ -3,9 +3,9 @@ import { SshClient } from "@microsoft/dev-tunnels-ssh-tcp";
 import { KeyData, Pkcs8KeyFormatter } from "@microsoft/dev-tunnels-ssh-keys";
 import { ensureSshKeys } from "./ensureSshKeys";
 
-export async function connectSession(): Promise<SshClientSession> {
+export async function connectSession(port: number): Promise<SshClientSession> {
     const client = new SshClient(new SshSessionConfiguration());
-    const session = await client.openSession('localhost', 2222)
+    const session = await client.openSession('localhost', port)
 
     session.onAuthenticating((e) => {
         if (

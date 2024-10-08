@@ -1,23 +1,32 @@
 import { CommandRequestMessage, SshExtendedDataType } from "@microsoft/dev-tunnels-ssh";
 import { ChannelSignalMessage } from "@microsoft/dev-tunnels-ssh/messages/connectionMessages";
 import { connectSession } from "./connectSession";
+import { TerminalRequestMessage } from "./terminalRequestMessage";
+import { parseArgs } from 'util'
 
-const commandToRun = 'cd /workspaces/devtunnels-sdk-tester/demos/express && npm run start';
+const defaultCommandToRun = 'bash -cli "cd demos/express && npm run start"';
 
 async function main(): Promise<void> {
-    const session = await connectSession();
+    const {port, tty, command} = getArgs();
+
+    const session = await connectSession(port);
     const channel = await session.openChannel();
 
     channel.onDataReceived(e => {
-        console.log(`STDOUT: ${e.toString("utf-8")}`)
+        const str = e.toString("utf-8")
+        if (str) {
+            console.log(`STDOUT: ${str}`)
+        }
     });
     
     channel.onExtendedDataReceived(e => {
         if (e.dataTypeCode !== SshExtendedDataType.STDERR) {
             return
         }
-        
-        console.log(`STDERR: ${e.toString()}`);
+        const str = e.toString()
+        if (str) {
+            console.log(`STDERR: ${str}`)
+        }
     });
 
     channel.onClosed(e => {
@@ -25,9 +34,14 @@ async function main(): Promise<void> {
         process.exit(0)
     });
 
+    if (tty) {
+        const terminalRequestMessage = new TerminalRequestMessage('xterm');
+        await channel.request(terminalRequestMessage);
+    }
+
     const execRequestMessage = new CommandRequestMessage();
-    execRequestMessage.command = commandToRun;
-    channel.request(execRequestMessage);
+    execRequestMessage.command = command;
+    await channel.request(execRequestMessage);
 
     console.log('Command sent. You can now type to write to stdin or use the following commands - remember to hit return!');
     console.log(' - !i => SIGINT');
@@ -36,11 +50,10 @@ async function main(): Promise<void> {
     console.log(' - !q => close and exit');
     console.log('');
 
-    const sendSignal = async (signal: 'INT' | 'TERM' | 'KILL') => {
+    const sendSignal = async (signal: 'INT' | 'TERM' | 'KILL' | 'FOO' | '') => {
         const signalMessage = new ChannelSignalMessage();
-        signalMessage.recipientChannel = channel.remoteChannelId;
         signalMessage.signal = signal;
-        await session.sendMessage(signalMessage);
+        await channel.request(signalMessage);
     };
 
     process.stdin.addListener("data", async function(d) {
@@ -64,6 +77,40 @@ async function main(): Promise<void> {
             await channel.send(Buffer.from(c))
         }
     });
+}
+
+function getArgs(): {port: number, tty: boolean, command: string} {
+    const {
+        values: {
+            port,
+            tty,
+            command,
+        }
+    } = parseArgs({
+        options: {
+            tty: {
+                type: 'boolean',
+                short: 't',
+                default: false
+            },
+            port: {
+                type: 'string',
+                short: 'p',
+                default: '2222'
+            },
+            command: {
+                type: 'string',
+                short: 'c',
+                default: defaultCommandToRun
+            }
+        }
+    })
+
+    return {
+        port: Number(port),
+        tty,
+        command,
+    }
 }
 
 main()
