@@ -1,7 +1,7 @@
 import { CommandRequestMessage, SshExtendedDataType } from "@microsoft/dev-tunnels-ssh";
 import { ChannelSignalMessage } from "@microsoft/dev-tunnels-ssh/messages/connectionMessages";
-import { connectSession } from "./connectSession";
-import { TerminalRequestMessage } from "./terminalRequestMessage";
+import { connectSession } from "./lib/connectSession";
+import { TerminalRequestMessage } from "./lib/terminalRequestMessage";
 import { parseArgs } from 'util'
 
 const defaultCommandToRun = 'bash -cli "cd demos/express && npm run start"';
@@ -35,7 +35,7 @@ async function main(): Promise<void> {
     });
 
     if (tty) {
-        const terminalRequestMessage = new TerminalRequestMessage('xterm');
+        const terminalRequestMessage = new TerminalRequestMessage();
         await channel.request(terminalRequestMessage);
     }
 
