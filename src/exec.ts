@@ -4,7 +4,7 @@ import { connectSession } from "./lib/connectSession";
 import { TerminalRequestMessage } from "./lib/terminalRequestMessage";
 import { parseArgs } from 'util'
 
-const defaultCommandToRun = 'bash -cli "cd demos/express && npm run start"';
+const defaultCommandToRun = 'for i in {1..15}; do echo \"Hello there: $i\" >> /workspaces/devtunnels-sdk-tester/log; sleep 1; done';
 
 async function main(): Promise<void> {
     const {port, tty, command} = getArgs();
