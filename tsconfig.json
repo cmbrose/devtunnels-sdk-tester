@@ -25,7 +25,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": [
-				"./src/*"
+				"ssh/*"
 			]
 		},
 		"skipLibCheck": true,
@@ -34,14 +34,14 @@
 		]
 	},
 	"include": [
-		"src/**/*.ts",
-		"src/**/*.tsx",
+		"ssh/**/*.ts",
+		"ssh/**/*.tsx",
 		"test/server/**/*.ts",
 		"test/client/**/*.ts",
 		"test/shared/**/*.ts",
 		"test/playwright/**/*.ts",
 		".next/types/**/*.ts"
-	],
+, "codespaces-ssh/ssh-tunneling.ts"	],
 	"exclude": [
 		"node_modules"
 	]

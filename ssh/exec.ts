@@ -4,10 +4,10 @@ import { connectSession } from "./lib/connectSession";
 import { TerminalRequestMessage } from "./lib/terminalRequestMessage";
 import { parseArgs } from 'util'
 
-const defaultCommandToRun = 'for i in {1..15}; do echo \"Hello there: $i\" >> /workspaces/devtunnels-sdk-tester/log; sleep 1; done';
+const defaultCommandToRun = 'sleep 10';
 
 async function main(): Promise<void> {
-    const {port, tty, command} = getArgs();
+    const { port, tty, command } = getArgs();
 
     const session = await connectSession(port);
     const channel = await session.openChannel();
@@ -18,7 +18,7 @@ async function main(): Promise<void> {
             console.log(`STDOUT: ${str}`)
         }
     });
-    
+
     channel.onExtendedDataReceived(e => {
         if (e.dataTypeCode !== SshExtendedDataType.STDERR) {
             return
@@ -50,13 +50,13 @@ async function main(): Promise<void> {
     console.log(' - !q => close and exit');
     console.log('');
 
-    const sendSignal = async (signal: 'INT' | 'TERM' | 'KILL' | 'FOO' | '') => {
+    const sendSignal = async (signal: 'INT' | 'TERM' | 'KILL' | '') => {
         const signalMessage = new ChannelSignalMessage();
         signalMessage.signal = signal;
         await channel.request(signalMessage);
     };
 
-    process.stdin.addListener("data", async function(d) {
+    process.stdin.addListener("data", async function (d) {
         const c = d.toString().trim();
 
         if (c === '!q') {
@@ -79,7 +79,7 @@ async function main(): Promise<void> {
     });
 }
 
-function getArgs(): {port: number, tty: boolean, command: string} {
+function getArgs(): { port: number, tty: boolean, command: string } {
     const {
         values: {
             port,

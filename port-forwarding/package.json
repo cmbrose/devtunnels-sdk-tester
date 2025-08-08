@@ -1,0 +1,31 @@
+{
+  "name": "devtunnels-port-token-test",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Test script to fetch a port-scoped Dev Tunnels token and call the forwarded URL",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "ts-node test.ts",
+    "server": "ts-node server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@microsoft/dev-tunnels-contracts": "*",
+    "@microsoft/dev-tunnels-management": "*",
+    "axios": "*"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "ts-node": "*",
+    "typescript": "*"
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "skipLibCheck": true
+    }
+  }
+}

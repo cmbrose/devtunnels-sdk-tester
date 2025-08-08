@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as sshpk from 'sshpk';
 
 export async function ensureSshKeys(): Promise<string> {
-    const sshDir = '/home/codespace/.ssh';
+    const sshDir = process.env.HOME + '/.ssh';
 
     if (!fs.existsSync(sshDir)) {
         fs.mkdirSync(sshDir);
@@ -57,11 +57,11 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
     for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
+        binary += String.fromCharCode(bytes[i]);
     }
     return btoa(binary);
 }
-  
+
 function arrayBufferToPem(buffer: ArrayBuffer, isPrivateKey = false) {
     const base64 = arrayBufferToBase64(buffer);
     const header = isPrivateKey ? '-----BEGIN PRIVATE KEY-----' : '-----BEGIN PUBLIC KEY-----';

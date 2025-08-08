@@ -1,0 +1,4 @@
+{
+    "name": "devtunnels-sdk-tester",
+    "postCreateCommand": ".devcontainer/postCreateCommand.sh"
+}
